@@ -1,5 +1,3 @@
- <img align="left" width="116" height="116" src="https://raw.githubusercontent.com/jasontaylordev/CleanArchitecture/main/.github/icon.png" />
- 
 <br/>
 
 This is a solution template for creating an API with ASP.NET Core following the principles of Clean Architecture. this template is a fork of jasontaylordev / CleanArchitecture

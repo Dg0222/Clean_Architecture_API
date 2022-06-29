@@ -1,4 +1,5 @@
-﻿using CleanArchitecture.Application.Common.Interfaces;
+﻿using API;
+using CleanArchitecture.Application.Common.Interfaces;
 using CleanArchitecture.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -11,7 +12,7 @@ namespace CleanArchitecture.Application.IntegrationTests;
 
 using static Testing;
 
-public class CustomWebApplicationFactory : WebApplicationFactory<Program>
+public class CustomWebApplicationFactory : WebApplicationFactory<Startup>
 {
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
@@ -34,9 +35,16 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
 
             services
                 .Remove<DbContextOptions<ApplicationDbContext>>()
-                .AddDbContext<ApplicationDbContext>((sp, options) =>
-                    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
-                        builder => builder.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
+                //.AddDbContext<ApplicationDbContext>((sp, options) =>
+                //    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
+                //        builder => builder.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
+
+                .AddDbContext<ApplicationDbContext>(options =>
+                    options.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"), serverVersion: new MySqlServerVersion(new Version(
+                            int.Parse(builder.Configuration.GetSection("MySQLVersion").GetSection("Major").Value),
+                            int.Parse(builder.Configuration.GetSection("MySQLVersion").GetSection("Minor").Value),
+                            int.Parse(builder.Configuration.GetSection("MySQLVersion").GetSection("Build").Value))),
+                             builder => builder.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
         });
     }
 }

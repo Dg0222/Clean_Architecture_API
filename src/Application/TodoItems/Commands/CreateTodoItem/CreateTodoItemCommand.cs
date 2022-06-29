@@ -1,6 +1,7 @@
 ﻿using CleanArchitecture.Application.Common.Interfaces;
 using CleanArchitecture.Domain.Entities;
 using CleanArchitecture.Domain.Events;
+using CleanArchitecture.Domain.Events.TodoItems;
 using MediatR;
 
 namespace CleanArchitecture.Application.TodoItems.Commands.CreateTodoItem;
@@ -9,7 +10,7 @@ public record CreateTodoItemCommand : IRequest<int>
 {
     public int ListId { get; init; }
 
-    public string? Title { get; init; }
+    public string Title { get; init; }
 }
 
 public class CreateTodoItemCommandHandler : IRequestHandler<CreateTodoItemCommand, int>
@@ -36,6 +37,6 @@ public class CreateTodoItemCommandHandler : IRequestHandler<CreateTodoItemComman
 
         await _context.SaveChangesAsync(cancellationToken);
 
-        return entity.Id;
+        return entity.ItemId;
     }
 }

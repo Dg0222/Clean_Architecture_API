@@ -14,7 +14,7 @@ public class UpdateTodoListTests : BaseTestFixture
     [Test]
     public async Task ShouldRequireValidTodoListId()
     {
-        var command = new UpdateTodoListCommand { Id = 99, Title = "New Title" };
+        var command = new UpdateTodoListCommand { ListId = 99, Title = "New Title" };
         await FluentActions.Invoking(() => SendAsync(command)).Should().ThrowAsync<NotFoundException>();
     }
 
@@ -33,7 +33,7 @@ public class UpdateTodoListTests : BaseTestFixture
 
         var command = new UpdateTodoListCommand
         {
-            Id = listId,
+            ListId = listId,
             Title = "Other List"
         };
 
@@ -55,7 +55,7 @@ public class UpdateTodoListTests : BaseTestFixture
 
         var command = new UpdateTodoListCommand
         {
-            Id = listId,
+            ListId = listId,
             Title = "Updated List Title"
         };
 

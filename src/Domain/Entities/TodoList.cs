@@ -1,10 +1,19 @@
-﻿namespace CleanArchitecture.Domain.Entities;
+﻿using System.ComponentModel.DataAnnotations;
+using CleanArchitecture.Domain.Common;
+
+namespace CleanArchitecture.Domain.Entities;
 
 public class TodoList : BaseAuditableEntity
 {
-    public string? Title { get; set; }
+    public TodoList()
+    {
+        TodoItems = new List<TodoItem>();
+    }
 
-    public Colour Colour { get; set; } = Colour.White;
+    [Key]
+    public int ListId { get; set; }
 
-    public IList<TodoItem> Items { get; private set; } = new List<TodoItem>();
+    public string Title { get; set; } = null!;
+
+    public List<TodoItem> TodoItems { get; set; }
 }

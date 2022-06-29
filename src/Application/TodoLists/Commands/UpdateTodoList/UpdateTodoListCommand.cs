@@ -7,9 +7,9 @@ namespace CleanArchitecture.Application.TodoLists.Commands.UpdateTodoList;
 
 public record UpdateTodoListCommand : IRequest
 {
-    public int Id { get; init; }
+    public int ListId { get; init; }
 
-    public string? Title { get; init; }
+    public string Title { get; init; }
 }
 
 public class UpdateTodoListCommandHandler : IRequestHandler<UpdateTodoListCommand>
@@ -23,13 +23,8 @@ public class UpdateTodoListCommandHandler : IRequestHandler<UpdateTodoListComman
 
     public async Task<Unit> Handle(UpdateTodoListCommand request, CancellationToken cancellationToken)
     {
-        var entity = await _context.TodoLists
-            .FindAsync(new object[] { request.Id }, cancellationToken);
-
-        if (entity == null)
-        {
-            throw new NotFoundException(nameof(TodoList), request.Id);
-        }
+        var entity = await _context.TodoLists.FindAsync(request.ListId) 
+                     ?? throw new NotFoundException(nameof(TodoList), request.ListId);
 
         entity.Title = request.Title;
 

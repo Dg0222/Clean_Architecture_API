@@ -1,4 +1,7 @@
-﻿using CleanArchitecture.Infrastructure.Identity;
+﻿using API;
+using CleanArchitecture.Application.Common.Interfaces;
+using CleanArchitecture.Domain.Entities.Identity;
+using CleanArchitecture.Infrastructure.Identity;
 using CleanArchitecture.Infrastructure.Persistence;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
@@ -6,19 +9,21 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using MySqlConnector;
 using NUnit.Framework;
 using Respawn;
+using Respawn.Graph;
 
 namespace CleanArchitecture.Application.IntegrationTests;
 
 [SetUpFixture]
 public partial class Testing
 {
-    private static WebApplicationFactory<Program> _factory = null!;
+    private static WebApplicationFactory<Startup> _factory = null!;
     private static IConfiguration _configuration = null!;
     private static IServiceScopeFactory _scopeFactory = null!;
     private static Checkpoint _checkpoint = null!;
-    private static string? _currentUserId;
+    private static string _currentUserId;
 
     [OneTimeSetUp]
     public void RunBeforeAnyTests()
@@ -29,7 +34,8 @@ public partial class Testing
 
         _checkpoint = new Checkpoint
         {
-            TablesToIgnore = new[] { "__EFMigrationsHistory" }
+            TablesToIgnore = new Table[] { "__EFMigrationsHistory" },
+            DbAdapter = DbAdapter.MySql
         };
     }
 
@@ -42,7 +48,7 @@ public partial class Testing
         return await mediator.Send(request);
     }
 
-    public static string? GetCurrentUserId()
+    public static string GetCurrentUserId()
     {
         return _currentUserId;
     }
@@ -62,6 +68,15 @@ public partial class Testing
         using var scope = _scopeFactory.CreateScope();
 
         var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+
+        var existingUser = await userManager.FindByNameAsync(userName);
+
+        if (existingUser != null)
+        {
+            _currentUserId = existingUser.Id;
+
+            return _currentUserId;
+        }
 
         var user = new ApplicationUser { UserName = userName, Email = userName };
 
@@ -93,12 +108,19 @@ public partial class Testing
 
     public static async Task ResetState()
     {
-        await _checkpoint.Reset(_configuration.GetConnectionString("DefaultConnection"));
+        //await _checkpoint.Reset(_configuration.GetConnectionString("DefaultConnection"));
+
+        await using (var conn = new MySqlConnection(_configuration.GetConnectionString("DefaultConnection")))
+        {
+            await conn.OpenAsync();
+
+            await _checkpoint.Reset(conn);
+        }
 
         _currentUserId = null;
     }
 
-    public static async Task<TEntity?> FindAsync<TEntity>(params object[] keyValues)
+    public static async Task<TEntity> FindAsync<TEntity>(params object[] keyValues)
         where TEntity : class
     {
         using var scope = _scopeFactory.CreateScope();

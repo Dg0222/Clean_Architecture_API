@@ -1,12 +1,18 @@
-﻿namespace CleanArchitecture.Domain.Entities;
+﻿using System.ComponentModel.DataAnnotations;
+using CleanArchitecture.Domain.Common;
+using CleanArchitecture.Domain.Enums;
+using CleanArchitecture.Domain.Events.TodoItems;
+
+namespace CleanArchitecture.Domain.Entities;
 
 public class TodoItem : BaseAuditableEntity
 {
-    public int ListId { get; set; }
+    [Key]
+    public int ItemId { get; set; }
 
-    public string? Title { get; set; }
+    public string Title { get; set; }
 
-    public string? Note { get; set; }
+    public string Note { get; set; }
 
     public PriorityLevel Priority { get; set; }
 
@@ -27,5 +33,6 @@ public class TodoItem : BaseAuditableEntity
         }
     }
 
-    public TodoList List { get; set; } = null!;
+    public int ListId { get; set; }
+    public virtual TodoList Todolist { get; set; }
 }

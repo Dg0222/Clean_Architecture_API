@@ -1,6 +1,5 @@
 ﻿using CleanArchitecture.Application.TodoLists.Queries.GetTodos;
 using CleanArchitecture.Domain.Entities;
-using CleanArchitecture.Domain.ValueObjects;
 using FluentAssertions;
 using NUnit.Framework;
 
@@ -30,8 +29,7 @@ public class GetTodosTests : BaseTestFixture
         await AddAsync(new TodoList
         {
             Title = "Shopping",
-            Colour = Colour.Blue,
-            Items =
+            TodoItems =
                     {
                         new TodoItem { Title = "Apples", Done = true },
                         new TodoItem { Title = "Milk", Done = true },
@@ -48,7 +46,7 @@ public class GetTodosTests : BaseTestFixture
         var result = await SendAsync(query);
 
         result.Lists.Should().HaveCount(1);
-        result.Lists.First().Items.Should().HaveCount(7);
+        result.Lists.First().TodoItems.Should().HaveCount(7);
     }
 
     [Test]

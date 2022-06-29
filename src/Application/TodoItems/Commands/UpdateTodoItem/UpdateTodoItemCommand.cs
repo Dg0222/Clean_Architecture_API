@@ -7,9 +7,9 @@ namespace CleanArchitecture.Application.TodoItems.Commands.UpdateTodoItem;
 
 public record UpdateTodoItemCommand : IRequest
 {
-    public int Id { get; init; }
+    public int ItemId { get; init; }
 
-    public string? Title { get; init; }
+    public string Title { get; init; }
 
     public bool Done { get; init; }
 }
@@ -25,13 +25,8 @@ public class UpdateTodoItemCommandHandler : IRequestHandler<UpdateTodoItemComman
 
     public async Task<Unit> Handle(UpdateTodoItemCommand request, CancellationToken cancellationToken)
     {
-        var entity = await _context.TodoItems
-            .FindAsync(new object[] { request.Id }, cancellationToken);
-
-        if (entity == null)
-        {
-            throw new NotFoundException(nameof(TodoItem), request.Id);
-        }
+        var entity = await _context.TodoItems.FindAsync(request.ItemId) 
+                     ?? throw new NotFoundException(nameof(TodoItem), request.ItemId);
 
         entity.Title = request.Title;
         entity.Done = request.Done;

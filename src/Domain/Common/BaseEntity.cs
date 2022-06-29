@@ -4,9 +4,7 @@ namespace CleanArchitecture.Domain.Common;
 
 public abstract class BaseEntity
 {
-    public int Id { get; set; }
-
-    private readonly List<BaseEvent> _domainEvents = new();
+    private readonly List<BaseEvent> _domainEvents = new List<BaseEvent>();
 
     [NotMapped]
     public IReadOnlyCollection<BaseEvent> DomainEvents => _domainEvents.AsReadOnly();

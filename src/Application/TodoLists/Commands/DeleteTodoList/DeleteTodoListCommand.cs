@@ -6,32 +6,40 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CleanArchitecture.Application.TodoLists.Commands.DeleteTodoList;
 
-public record DeleteTodoListCommand(int Id) : IRequest;
-
-public class DeleteTodoListCommandHandler : IRequestHandler<DeleteTodoListCommand>
+public class DeleteTodoListCommand : IRequest
 {
-    private readonly IApplicationDbContext _context;
+    public int ListId { get; set; }
 
-    public DeleteTodoListCommandHandler(IApplicationDbContext context)
+    public DeleteTodoListCommand(int listId)
     {
-        _context = context;
+        ListId = listId;
     }
 
-    public async Task<Unit> Handle(DeleteTodoListCommand request, CancellationToken cancellationToken)
+    public class DeleteTodoListCommandHandler : IRequestHandler<DeleteTodoListCommand>
     {
-        var entity = await _context.TodoLists
-            .Where(l => l.Id == request.Id)
-            .SingleOrDefaultAsync(cancellationToken);
+        private readonly IApplicationDbContext _context;
 
-        if (entity == null)
+        public DeleteTodoListCommandHandler(IApplicationDbContext context)
         {
-            throw new NotFoundException(nameof(TodoList), request.Id);
+            _context = context;
         }
 
-        _context.TodoLists.Remove(entity);
+        public async Task<Unit> Handle(DeleteTodoListCommand request, CancellationToken cancellationToken)
+        {
+            var entity = await _context.TodoLists
+                .Where(l => l.ListId == request.ListId)
+                .SingleOrDefaultAsync(cancellationToken);
 
-        await _context.SaveChangesAsync(cancellationToken);
+            if (entity == null)
+            {
+                throw new NotFoundException(nameof(TodoList), request.ListId);
+            }
 
-        return Unit.Value;
+            _context.TodoLists.Remove(entity);
+
+            await _context.SaveChangesAsync(cancellationToken);
+
+            return Unit.Value;
+        }
     }
 }

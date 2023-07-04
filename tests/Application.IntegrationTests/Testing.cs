@@ -17,7 +17,7 @@ public partial class Testing
     private static WebApplicationFactory<Program> _factory = null!;
     private static IConfiguration _configuration = null!;
     private static IServiceScopeFactory _scopeFactory = null!;
-    private static string? _userId;
+    private static string _userId;
 
     [OneTimeSetUp]
     public void RunBeforeAnyTests()

@@ -7,6 +7,8 @@ using CleanArchitecture.Infrastructure;
 using CleanArchitecture.Infrastructure.Hubs;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.OpenApi.Models;
+using Serilog;
 
 namespace API;
 
@@ -32,12 +34,38 @@ public class Startup
 
         services.AddSwaggerGen(options =>
         {
-            options.CustomSchemaIds(type => type.FullName?.Replace("+", "."));
+            options.SwaggerDoc("v1", new OpenApiInfo()
+            {
+                Title = "Clean Architecture API",
+                Version = "v1"
+            });
+            options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+            {
+                In = ParameterLocation.Header,
+                Description = "Please enter bearer token",
+                Name = "Authorization",
+                Type = SecuritySchemeType.Http,
+                BearerFormat = "JWT",
+                Scheme = "bearer"
+            });
+            options.AddSecurityRequirement(new OpenApiSecurityRequirement()
+            {
+                {
+                    new OpenApiSecurityScheme()
+                    {
+                        Reference = new OpenApiReference()
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        }
+                    },
+                    new List<string>()
+                }
+            });
         });
 
         services.AddSignalR();
 
-        Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
         services.AddCors(options =>
         {
@@ -78,6 +106,8 @@ public class Startup
         {
             ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
         });
+
+        app.UseSerilogRequestLogging();
 
         app.UseAuthentication();
         app.UseIdentityServer();

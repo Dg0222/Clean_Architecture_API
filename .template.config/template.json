@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "author": "Daniel Garcia",
+  "classifications": [ "Web" ],
+  "identity": "Clean_Architecture_API_Template",
+  "name": "Clean Architecture API Template",
+  "description": "A Clean Architecture API template for creating a REST API",
+  "shortName": "cleanarchitectureapitemplate",
+  "sourceName": "Clean_Architecture_API_Template",
+  "tags": {
+    "language": "C#",
+    "type": "project"
+  },
+  "preferNameDirectory": true
+}

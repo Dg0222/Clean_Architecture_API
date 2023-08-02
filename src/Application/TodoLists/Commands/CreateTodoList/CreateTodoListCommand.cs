@@ -1,4 +1,5 @@
 ﻿using CleanArchitecture.Application.Common.Interfaces;
+using CleanArchitecture.Application.Common.Mappers;
 using CleanArchitecture.Domain.Entities;
 
 namespace CleanArchitecture.Application.TodoLists.Commands.CreateTodoList;
@@ -19,15 +20,13 @@ public class CreateTodoListCommandHandler : IRequestHandler<CreateTodoListComman
 
     public async Task<int> Handle(CreateTodoListCommand request, CancellationToken cancellationToken)
     {
-        var entity = new TodoList
-        {
-            Title = request.Title
-        };
 
-        _context.TodoLists.Add(entity);
+       var todoList = request.MapToTodoList();
+
+        _context.TodoLists.Add(todoList);
 
         await _context.SaveChangesAsync(cancellationToken);
 
-        return entity.ListId;
+        return todoList.ListId;
     }
 }

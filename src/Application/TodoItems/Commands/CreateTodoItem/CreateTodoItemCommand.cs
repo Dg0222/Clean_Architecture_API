@@ -1,4 +1,5 @@
 ﻿using CleanArchitecture.Application.Common.Interfaces;
+using CleanArchitecture.Application.Common.Mappers;
 using CleanArchitecture.Domain.Entities;
 using CleanArchitecture.Domain.Events;
 using CleanArchitecture.Domain.Events.TodoItems;
@@ -24,19 +25,16 @@ public class CreateTodoItemCommandHandler : IRequestHandler<CreateTodoItemComman
 
     public async Task<int> Handle(CreateTodoItemCommand request, CancellationToken cancellationToken)
     {
-        var entity = new TodoItem
-        {
-            ListId = request.ListId,
-            Title = request.Title,
-            Done = false
-        };
+        var todoItem = request.MapToTodoItem();
 
-        entity.AddDomainEvent(new TodoItemCreatedEvent(entity));
+        todoItem.Done = false;
 
-        _context.TodoItems.Add(entity);
+        todoItem.AddDomainEvent(new TodoItemCreatedEvent(todoItem));
+
+        _context.TodoItems.Add(todoItem);
 
         await _context.SaveChangesAsync(cancellationToken);
 
-        return entity.ItemId;
+        return todoItem.ItemId;
     }
 }

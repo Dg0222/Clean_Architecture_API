@@ -24,7 +24,7 @@ public class TodoItemsController : ControllerBase
     [HttpGet]
     [ProducesResponseType(typeof(PaginatedList<TodoItemBriefDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<PaginatedList<TodoItemBriefDto>>> GetTodoItemsWithPagination([FromQuery] GetTodoItemsWithPaginationQuery query)
+    public async Task<ActionResult<PaginatedList<TodoItemBriefDto>>> GetTodoItemsWithPagination([FromQuery] GetTodoItemsQuery query)
     {
         var result = await _mediator.Send(query);
 

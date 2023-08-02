@@ -1,10 +1,8 @@
-﻿using AutoMapper;
-using CleanArchitecture.Application.Common.Mappings;
-using CleanArchitecture.Domain.Entities;
+﻿
 
 namespace CleanArchitecture.Application.TodoItems.Queries.GetTodoItemsWithPagination;
 
-public class TodoItemBriefDto : IMapFrom<TodoItem>
+public class TodoItemBriefDto 
 {
     public int ItemId { get; set; }
 

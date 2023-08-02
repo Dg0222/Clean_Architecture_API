@@ -1,4 +1,5 @@
 ﻿using CleanArchitecture.Application.Common.Interfaces;
+using CleanArchitecture.Application.Common.Mappers;
 
 namespace CleanArchitecture.Application.TodoItems.Commands.UpdateTodoItem;
 
@@ -22,13 +23,12 @@ public class UpdateTodoItemCommandHandler : IRequestHandler<UpdateTodoItemComman
 
     public async Task Handle(UpdateTodoItemCommand request, CancellationToken cancellationToken)
     {
-        var entity = await _context.TodoItems
+        var todoItem = await _context.TodoItems
             .FindAsync(new object[] { request.Id }, cancellationToken);
 
-        Guard.Against.NotFound(request.Id, entity);
+        Guard.Against.NotFound(request.Id, todoItem);
 
-        entity.Title = request.Title;
-        entity.Done = request.Done;
+        request.MapToTodoItem(todoItem);
 
         await _context.SaveChangesAsync(cancellationToken);
     }

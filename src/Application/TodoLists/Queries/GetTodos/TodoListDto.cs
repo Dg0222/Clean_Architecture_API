@@ -1,11 +1,9 @@
-﻿using AutoMapper;
-using CleanArchitecture.Application.Common.Mappings;
-using CleanArchitecture.Domain.Entities;
+﻿using CleanArchitecture.Domain.Entities;
 using CleanArchitecture.Domain.Enums;
 
 namespace CleanArchitecture.Application.TodoLists.Queries.GetTodos;
 
-public class TodoListDto : IMapFrom<TodoList>
+public class TodoListDto
 {
     public TodoListDto()
     {

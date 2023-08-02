@@ -1,4 +1,5 @@
 ﻿using CleanArchitecture.Application.Common.Interfaces;
+using CleanArchitecture.Application.Common.Mappers;
 using CleanArchitecture.Domain.Enums;
 
 namespace CleanArchitecture.Application.TodoItems.Commands.UpdateTodoItemDetail;
@@ -25,14 +26,12 @@ public class UpdateTodoItemDetailCommandHandler : IRequestHandler<UpdateTodoItem
 
     public async Task Handle(UpdateTodoItemDetailCommand request, CancellationToken cancellationToken)
     {
-        var entity = await _context.TodoItems
+        var todoItem = await _context.TodoItems
             .FindAsync(new object[] { request.Id }, cancellationToken);
 
-        Guard.Against.NotFound(request.Id, entity);
+        Guard.Against.NotFound(request.Id, todoItem);
 
-        entity.ListId = request.ListId;
-        entity.Priority = request.Priority;
-        entity.Note = request.Note;
+        request.MapToTodoItem(todoItem);
 
         await _context.SaveChangesAsync(cancellationToken);
     }

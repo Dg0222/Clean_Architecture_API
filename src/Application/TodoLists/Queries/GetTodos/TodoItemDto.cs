@@ -1,9 +1,8 @@
-﻿using CleanArchitecture.Application.Common.Mappings;
-using CleanArchitecture.Domain.Entities;
+﻿using CleanArchitecture.Domain.Entities;
 
 namespace CleanArchitecture.Application.TodoLists.Queries.GetTodos;
 
-public class TodoItemDto : IMapFrom<TodoItem>
+public class TodoItemDto
 {
     public int ItemId { get; init; }
 

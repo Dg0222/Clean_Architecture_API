@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestPlatform.TestHost;
-using Moq;
+using NSubstitute;
 
 namespace CleanArchitecture.Application.IntegrationTests;
 
@@ -30,8 +30,7 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
         {
             services
                 .Remove<ICurrentUserService>()
-                .AddTransient(provider => Mock.Of<ICurrentUserService>(s =>
-                    s.Id == GetUserId()));
+                .AddTransient(provider => Substitute.For<ICurrentUserService>());
 
             services
                 .Remove<DbContextOptions<ApplicationDbContext>>()
